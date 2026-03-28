@@ -5,7 +5,7 @@ export const StyledSkipLink = styled.a`
   top: -100%;
   left: 0;
   padding: 12px 20px;
-  background: ${({ theme }) => theme.palette?.primary?.main ?? "#E85D26"};
+  background: #e85d26;
   color: #ffffff;
   font-weight: 600;
   font-size: 0.9rem;

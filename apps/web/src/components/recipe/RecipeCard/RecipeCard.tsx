@@ -86,7 +86,7 @@ export function RecipeCard({ recipe, onFavoriteToggle }: RecipeCardProps) {
         </ImageWrapper>
 
         <StyledCardContent>
-          <RecipeTitle variant="h3" component="h3">
+          <RecipeTitle variant="h3">
             {recipe.title}
           </RecipeTitle>
 
