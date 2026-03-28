@@ -6,4 +6,6 @@ export interface SearchBarProps {
   size?: "sm" | "md" | "lg";
   autoFocus?: boolean;
   showButton?: boolean;
+  /** Use dark/glassmorphic styling for placement on dark backgrounds */
+  variant?: "light" | "dark";
 }
