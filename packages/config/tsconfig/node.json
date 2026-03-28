@@ -1,0 +1,8 @@
+{
+  "extends": "./base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "lib": ["ES2023"],
+    "types": ["node"]
+  }
+}

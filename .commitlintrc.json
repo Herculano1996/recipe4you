@@ -1,0 +1,27 @@
+{
+  "extends": ["@commitlint/config-conventional"],
+  "rules": {
+    "scope-enum": [
+      2,
+      "always",
+      [
+        "web",
+        "api",
+        "types",
+        "config",
+        "ci",
+        "auth",
+        "recipe",
+        "search",
+        "collection",
+        "favorite",
+        "pwa",
+        "db",
+        "storage",
+        "a11y",
+        "deps"
+      ]
+    ],
+    "body-max-line-length": [1, "always", 100]
+  }
+}

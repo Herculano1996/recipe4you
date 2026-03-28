@@ -1,0 +1,228 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── Users ─────────────────────────────────────────────────────────────────
+// id mirrors Supabase auth.users.id (UUID) — no join to Supabase internals needed
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  username    String   @unique @db.VarChar(50)
+  displayName String?  @db.VarChar(100)
+  avatarUrl   String?
+  bio         String?  @db.VarChar(500)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  recipes     Recipe[]
+  favorites   Favorite[]
+  collections Collection[]
+  ratings     RecipeRating[]
+
+  @@map("users")
+}
+
+// ─── Recipes ───────────────────────────────────────────────────────────────
+model Recipe {
+  id          String     @id @default(cuid())
+  title       String     @db.VarChar(200)
+  slug        String     @unique @db.VarChar(220)
+  description String?    @db.VarChar(1000)
+  difficulty  Difficulty @default(MEDIUM)
+  prepTime    Int        // minutes
+  cookTime    Int        // minutes
+  restTime    Int        @default(0) // minutes (marinating, rising, etc.)
+  servings    Int
+  calories    Int?       // per serving
+  isPublished Boolean    @default(false)
+  isPublic    Boolean    @default(true)
+  coverImage  String?    // Supabase Storage URL
+  sourceUrl   String?    // attribution for adapted recipes
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  ingredients RecipeIngredient[]
+  steps       RecipeStep[]
+  images      RecipeImage[]
+  tags        RecipeTag[]
+  favorites   Favorite[]
+  collections CollectionRecipe[]
+  ratings     RecipeRating[]
+
+  @@index([authorId])
+  @@index([slug])
+  @@index([isPublished, isPublic, createdAt(sort: Desc)])
+  @@map("recipes")
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+  EXPERT
+}
+
+// ─── Ingredients ───────────────────────────────────────────────────────────
+// Normalized catalogue for autocomplete and future nutritional lookups
+model Ingredient {
+  id       String  @id @default(cuid())
+  name     String  @unique @db.VarChar(100)
+  category String? @db.VarChar(50) // "Dairy", "Produce", "Meat", etc.
+
+  recipeUses RecipeIngredient[]
+
+  @@map("ingredients")
+}
+
+model RecipeIngredient {
+  id           String  @id @default(cuid())
+  recipeId     String
+  ingredientId String
+  quantity     Decimal @db.Decimal(10, 3) // Decimal avoids float rounding for scaling
+  unit         String  @db.VarChar(30)    // "g", "ml", "cup", "tbsp", etc.
+  notes        String? @db.VarChar(200)   // "finely chopped", "room temperature"
+  groupName    String? @db.VarChar(100)   // "For the sauce", "For the dough"
+  sortOrder    Int     @default(0)
+
+  recipe     Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+
+  @@index([recipeId])
+  @@map("recipe_ingredients")
+}
+
+// ─── Steps ─────────────────────────────────────────────────────────────────
+model RecipeStep {
+  id          String  @id @default(cuid())
+  recipeId    String
+  stepNumber  Int
+  title       String? @db.VarChar(150)
+  description String  @db.Text
+  duration    Int?    // minutes — optional step timer hint
+  imageUrl    String? // Supabase Storage URL
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@index([recipeId, stepNumber])
+  @@map("recipe_steps")
+}
+
+// ─── Images ────────────────────────────────────────────────────────────────
+model RecipeImage {
+  id        String   @id @default(cuid())
+  recipeId  String
+  url       String
+  altText   String?  @db.VarChar(300)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@index([recipeId])
+  @@map("recipe_images")
+}
+
+// ─── Tags ──────────────────────────────────────────────────────────────────
+model Tag {
+  id       String      @id @default(cuid())
+  name     String      @unique @db.VarChar(50)
+  slug     String      @unique @db.VarChar(55)
+  category TagCategory @default(GENERAL)
+
+  recipes RecipeTag[]
+
+  @@map("tags")
+}
+
+enum TagCategory {
+  GENERAL        // "Quick", "Budget"
+  DIETARY        // "Vegan", "Gluten-Free", "Keto"
+  CUISINE        // "Italian", "Mexican", "Thai"
+  MEAL_TYPE      // "Breakfast", "Lunch", "Dinner", "Snack", "Dessert"
+  OCCASION       // "Christmas", "BBQ", "Weeknight"
+  COOKING_METHOD // "Baked", "Grilled", "Air-Fryer"
+}
+
+model RecipeTag {
+  recipeId String
+  tagId    String
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([recipeId, tagId])
+  @@map("recipe_tags")
+}
+
+// ─── Favorites ─────────────────────────────────────────────────────────────
+model Favorite {
+  userId    String
+  recipeId  String
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, recipeId])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("favorites")
+}
+
+// ─── Collections ───────────────────────────────────────────────────────────
+model Collection {
+  id          String   @id @default(cuid())
+  name        String   @db.VarChar(150)
+  description String?  @db.VarChar(500)
+  coverImage  String?
+  isPublic    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  recipes CollectionRecipe[]
+
+  @@index([ownerId])
+  @@map("collections")
+}
+
+model CollectionRecipe {
+  collectionId String
+  recipeId     String
+  sortOrder    Int      @default(0)
+  addedAt      DateTime @default(now())
+
+  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  recipe     Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@id([collectionId, recipeId])
+  @@map("collection_recipes")
+}
+
+// ─── Ratings ───────────────────────────────────────────────────────────────
+model RecipeRating {
+  id        String   @id @default(cuid())
+  recipeId  String
+  userId    String
+  score     Int      // 1–5
+  comment   String?  @db.VarChar(1000)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([recipeId, userId]) // one rating per user per recipe
+  @@index([recipeId])
+  @@map("recipe_ratings")
+}
