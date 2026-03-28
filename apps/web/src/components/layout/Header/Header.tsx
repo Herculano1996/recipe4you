@@ -1,7 +1,7 @@
 import MenuIcon from "@mui/icons-material/Menu";
 import AddIcon from "@mui/icons-material/Add";
 import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useAuthStore } from "../../../store/authStore.js";
 import type { HeaderProps } from "./Header.types.js";
 import {
@@ -29,8 +29,14 @@ export function Header({ onMenuToggle }: HeaderProps) {
     navigate("/");
   };
 
+  const handleNav =
+    (path: string) => (e: React.MouseEvent<HTMLElement>) => {
+      e.preventDefault();
+      navigate(path);
+    };
+
   return (
-    <StyledAppBar position="sticky" component="header">
+    <StyledAppBar position="sticky">
       <StyledToolbar disableGutters>
         <MobileMenuButton
           edge="start"
@@ -43,34 +49,34 @@ export function Header({ onMenuToggle }: HeaderProps) {
         <LogoLink
           href="/"
           aria-label="recipe4you — go to home"
-          onClick={(e) => {
-            e.preventDefault();
-            navigate("/");
-          }}
+          onClick={handleNav("/")}
         >
           <RestaurantMenuIcon
             sx={{ color: "#E85D26", fontSize: 22, mr: 0.5 }}
             aria-hidden
           />
-          <LogoText variant="h6" component="span">
+          <LogoText variant="h6" as="span">
             recipe4you
             <LogoAccent aria-hidden />
           </LogoText>
         </LogoLink>
 
-        <NavGroup component="nav" aria-label="Primary navigation">
-          <NavButton component={Link} to="/discover">
+        <NavGroup as="nav" aria-label="Primary navigation">
+          <NavButton href="/discover" onClick={handleNav("/discover")}>
             Discover
           </NavButton>
-          <NavButton component={Link} to="/search">
+          <NavButton href="/search" onClick={handleNav("/search")}>
             Search
           </NavButton>
           {isAuthenticated && (
             <>
-              <NavButton component={Link} to="/collections">
+              <NavButton href="/collections" onClick={handleNav("/collections")}>
                 My Collections
               </NavButton>
-              <NavButton component={Link} to="/profile/favorites">
+              <NavButton
+                href="/profile/favorites"
+                onClick={handleNav("/profile/favorites")}
+              >
                 Favorites
               </NavButton>
             </>
@@ -81,15 +87,15 @@ export function Header({ onMenuToggle }: HeaderProps) {
           {isAuthenticated ? (
             <>
               <AddRecipeButton
-                component={Link}
-                to="/recipes/new"
+                href="/recipes/new"
+                onClick={handleNav("/recipes/new")}
                 startIcon={<AddIcon />}
               >
                 Add Recipe
               </AddRecipeButton>
               <UserMenuButton
-                component={Link}
-                to="/profile"
+                href="/profile"
+                onClick={handleNav("/profile")}
                 aria-label={`Your profile — ${user?.displayName ?? user?.username}`}
               >
                 {user?.displayName ?? user?.username}
@@ -100,10 +106,13 @@ export function Header({ onMenuToggle }: HeaderProps) {
             </>
           ) : (
             <>
-              <LoginButton component={Link} to="/auth/login">
+              <LoginButton href="/auth/login" onClick={handleNav("/auth/login")}>
                 Log in
               </LoginButton>
-              <SignUpButton component={Link} to="/auth/register">
+              <SignUpButton
+                href="/auth/register"
+                onClick={handleNav("/auth/register")}
+              >
                 Get started
               </SignUpButton>
             </>
