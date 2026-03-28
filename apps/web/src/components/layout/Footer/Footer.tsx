@@ -53,7 +53,7 @@ const sections: FooterSection[] = [
 
 export function Footer({ className }: FooterProps) {
   return (
-    <FooterRoot component="footer" className={className}>
+    <FooterRoot as="footer" className={className}>
       <FooterInner>
         <FooterTop>
           <BrandColumn>
