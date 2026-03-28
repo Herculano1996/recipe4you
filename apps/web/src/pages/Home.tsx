@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import type { RecipeSummary } from "@recipe4you/types";
 import { SearchBar } from "../components/search/SearchBar/SearchBar.js";
 import { RecipeGrid } from "../components/recipe/RecipeGrid/RecipeGrid.js";
@@ -9,31 +9,52 @@ import {
   HeroSection,
   HeroBackground,
   HeroBlob,
+  HeroNoise,
   HeroContent,
   HeroBadge,
   HeroHeading,
   HeadingAccent,
   HeroSubheading,
   HeroSearchWrapper,
+  HeroTagsRow,
+  HeroTag,
   HeroStats,
   StatItem,
   StatNumber,
   StatLabel,
+  ScrollIndicator,
+  FeaturesSection,
+  FeaturesInner,
+  FeaturesGrid,
+  FeatureCard,
+  FeatureIcon,
+  FeatureTitle,
+  FeatureDesc,
   SectionWrapper,
   SectionInner,
   SectionHeader,
-  SectionLabel,
+  SectionEyebrow,
   SectionTitle,
   ViewAllButton,
   CategoryStrip,
   CategoryChip,
   CtaBanner,
-  CtaText,
+  CtaContent,
   CtaHeading,
   CtaSubheading,
-  CtaButton,
-  CtaDecoration,
+  CtaActions,
+  CtaPrimaryButton,
+  CtaSecondaryButton,
 } from "./Home.styled.js";
+
+const QUICK_TAGS = [
+  "Pasta",
+  "30-min meals",
+  "Vegetarian",
+  "Breakfast",
+  "Healthy",
+  "Desserts",
+];
 
 const CATEGORIES = [
   "All",
@@ -46,7 +67,25 @@ const CATEGORIES = [
   "Quick & Easy",
 ];
 
-// Placeholder data — replaced by real API data once query hooks are wired up
+const FEATURES = [
+  {
+    icon: "🔍",
+    title: "Discover Thousands",
+    desc: "Browse over 10,000 chef-quality recipes from cuisines around the world, curated and community-loved.",
+  },
+  {
+    icon: "📌",
+    title: "Save & Organise",
+    desc: "Create personal collections, bookmark favorites, and build your own digital cookbook with ease.",
+  },
+  {
+    icon: "✍️",
+    title: "Share Your Craft",
+    desc: "Publish your recipes, get feedback from a passionate community, and inspire fellow home cooks.",
+  },
+];
+
+// Placeholder — replaced by real API data once hooks are wired
 const MOCK_RECIPES: RecipeSummary[] = [];
 
 export default function HomePage() {
@@ -55,36 +94,39 @@ export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState("All");
 
   const handleSearch = (value: string) => {
-    if (value.trim()) {
-      navigate(`/search?q=${encodeURIComponent(value.trim())}`);
-    }
+    if (value.trim()) navigate(`/search?q=${encodeURIComponent(value.trim())}`);
+  };
+
+  const handleTagClick = (tag: string) => {
+    navigate(`/search?q=${encodeURIComponent(tag)}`);
   };
 
   return (
     <>
-      {/* ── Hero ─────────────────────────────────────────── */}
+      {/* ─── Hero ───────────────────────────────────── */}
       <HeroSection aria-labelledby="hero-heading">
         <HeroBackground aria-hidden>
           <HeroBlob $which={1} />
           <HeroBlob $which={2} />
           <HeroBlob $which={3} />
+          <HeroNoise />
         </HeroBackground>
 
         <HeroContent>
-          <HeroBadge
-            icon={<AutoAwesomeIcon style={{ fontSize: 14 }} />}
-            label="10,000+ recipes &amp; counting"
-          />
+          <HeroBadge>
+            <span className="dot" aria-hidden />
+            Now in Beta &mdash; join 10,000+ home cooks
+          </HeroBadge>
 
-          <HeroHeading variant="h1" id="hero-heading">
-            Cook something
+          <HeroHeading id="hero-heading">
+            Cook Something
             <br />
-            <HeadingAccent>extraordinary</HeadingAccent> today
+            <HeadingAccent>Extraordinary</HeadingAccent> Today
           </HeroHeading>
 
           <HeroSubheading>
             Discover chef-quality recipes, save your favorites, and share what
-            you love with a community of food enthusiasts.
+            you love with a community of passionate food enthusiasts.
           </HeroSubheading>
 
           <HeroSearchWrapper>
@@ -94,8 +136,21 @@ export default function HomePage() {
               onSearch={handleSearch}
               size="lg"
               placeholder="Search recipes, ingredients, cuisines…"
+              variant="dark"
             />
           </HeroSearchWrapper>
+
+          <HeroTagsRow aria-label="Quick search suggestions">
+            {QUICK_TAGS.map((tag) => (
+              <HeroTag
+                key={tag}
+                onClick={() => handleTagClick(tag)}
+                aria-label={`Search ${tag}`}
+              >
+                {tag}
+              </HeroTag>
+            ))}
+          </HeroTagsRow>
 
           <HeroStats aria-label="Platform statistics">
             <StatItem>
@@ -114,14 +169,40 @@ export default function HomePage() {
             </StatItem>
           </HeroStats>
         </HeroContent>
+
+        <ScrollIndicator aria-hidden>
+          <KeyboardArrowDownIcon />
+          Scroll
+        </ScrollIndicator>
       </HeroSection>
 
-      {/* ── Featured recipes ─────────────────────────────── */}
+      {/* ─── Why recipe4you ─────────────────────────── */}
+      <FeaturesSection aria-labelledby="features-heading">
+        <FeaturesInner>
+          <div style={{ textAlign: "center" }}>
+            <SectionEyebrow>Why recipe4you</SectionEyebrow>
+            <SectionTitle variant="h2" id="features-heading">
+              Everything you need to cook better
+            </SectionTitle>
+          </div>
+          <FeaturesGrid>
+            {FEATURES.map((f) => (
+              <FeatureCard key={f.title}>
+                <FeatureIcon aria-hidden>{f.icon}</FeatureIcon>
+                <FeatureTitle>{f.title}</FeatureTitle>
+                <FeatureDesc>{f.desc}</FeatureDesc>
+              </FeatureCard>
+            ))}
+          </FeaturesGrid>
+        </FeaturesInner>
+      </FeaturesSection>
+
+      {/* ─── Featured recipes ───────────────────────── */}
       <SectionWrapper aria-labelledby="featured-heading">
         <SectionInner>
           <SectionHeader>
             <div>
-              <SectionLabel aria-hidden>Handpicked</SectionLabel>
+              <SectionEyebrow>Handpicked</SectionEyebrow>
               <SectionTitle variant="h2" id="featured-heading">
                 Featured this week
               </SectionTitle>
@@ -144,15 +225,15 @@ export default function HomePage() {
         </SectionInner>
       </SectionWrapper>
 
-      {/* ── Browse by category ───────────────────────────── */}
+      {/* ─── Trending ───────────────────────────────── */}
       <SectionWrapper
         aria-labelledby="trending-heading"
-        style={{ background: "#fafafa", paddingTop: 56, paddingBottom: 56 }}
+        style={{ background: "#f9f9f7", paddingTop: 56, paddingBottom: 56 }}
       >
         <SectionInner>
           <SectionHeader>
             <div>
-              <SectionLabel aria-hidden>Explore</SectionLabel>
+              <SectionEyebrow>Explore</SectionEyebrow>
               <SectionTitle variant="h2" id="trending-heading">
                 Trending now
               </SectionTitle>
@@ -184,29 +265,37 @@ export default function HomePage() {
               recipes={MOCK_RECIPES}
               loading={false}
               skeletonCount={8}
-              emptyMessage="Trending recipes will appear here once you have some data."
+              emptyMessage="Trending recipes will appear here once data is available."
             />
           </div>
         </SectionInner>
       </SectionWrapper>
 
-      {/* ── CTA banner ───────────────────────────────────── */}
-      <CtaBanner aria-label="Create your own recipe">
-        <CtaDecoration aria-hidden />
-        <CtaText>
-          <CtaHeading>Share your best recipe</CtaHeading>
+      {/* ─── CTA ────────────────────────────────────── */}
+      <CtaBanner aria-labelledby="cta-heading">
+        <CtaContent>
+          <CtaHeading id="cta-heading">Share your best recipe</CtaHeading>
           <CtaSubheading>
-            Join thousands of home cooks and publish your creations for the
-            world to enjoy.
+            Join thousands of home cooks. Publish your creations, inspire
+            others, and build your culinary legacy.
           </CtaSubheading>
-        </CtaText>
-        <CtaButton
-          size="large"
-          onClick={() => navigate("/recipes/new")}
-          disableElevation
-        >
-          Add your recipe
-        </CtaButton>
+        </CtaContent>
+        <CtaActions>
+          <CtaPrimaryButton
+            size="large"
+            onClick={() => navigate("/recipes/new")}
+            disableElevation
+          >
+            Add your recipe
+          </CtaPrimaryButton>
+          <CtaSecondaryButton
+            size="large"
+            onClick={() => navigate("/discover")}
+            disableElevation
+          >
+            Browse first
+          </CtaSecondaryButton>
+        </CtaActions>
       </CtaBanner>
     </>
   );

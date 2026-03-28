@@ -18,10 +18,10 @@ export function SearchBar({
   size = "md",
   autoFocus = false,
   showButton = true,
+  variant = "light",
 }: SearchBarProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Use ref-based focus instead of HTML autoFocus attribute (jsx-a11y/no-autofocus)
   useEffect(() => {
     if (autoFocus) {
       inputRef.current?.focus();
@@ -41,13 +41,14 @@ export function SearchBar({
   };
 
   return (
-    <SearchWrapper $size={size} role="search">
-      <SearchIconWrapper $size={size} aria-hidden>
+    <SearchWrapper $size={size} $variant={variant} role="search">
+      <SearchIconWrapper $size={size} $variant={variant} aria-hidden>
         <SearchIcon />
       </SearchIconWrapper>
 
       <StyledInputBase
         $size={size}
+        $variant={variant}
         inputRef={inputRef}
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
@@ -62,6 +63,7 @@ export function SearchBar({
 
       {value && (
         <ClearButton
+          $variant={variant}
           onClick={handleClear}
           aria-label="Clear search"
           size="small"

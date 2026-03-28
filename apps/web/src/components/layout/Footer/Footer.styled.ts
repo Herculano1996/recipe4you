@@ -5,10 +5,11 @@ import MuiLink from "@mui/material/Link";
 import Divider from "@mui/material/Divider";
 
 export const FooterRoot = styled(Box)`
-  background: #0f0f0f;
-  color: rgba(255, 255, 255, 0.85);
-  padding: 64px 0 32px;
+  background: #080808;
+  color: rgba(255, 255, 255, 0.82);
+  padding: 72px 0 36px;
   margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 `;
 
 export const FooterInner = styled.div`
@@ -17,13 +18,13 @@ export const FooterInner = styled.div`
   padding: 0 24px;
 
   @media (max-width: 600px) {
-    padding: 0 16px;
+    padding: 0 20px;
   }
 `;
 
 export const FooterTop = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2.2fr 1fr 1fr 1fr;
   gap: 48px;
 
   @media (max-width: 960px) {
@@ -33,21 +34,21 @@ export const FooterTop = styled.div`
 
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 36px;
   }
 `;
 
 export const BrandColumn = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 `;
 
 export const LogoMark = styled(Typography)`
   font-weight: 800 !important;
-  font-size: 1.5rem !important;
-  letter-spacing: -0.5px !important;
-  background: linear-gradient(135deg, #e85d26 0%, #ff8c5a 100%);
+  font-size: 1.3rem !important;
+  letter-spacing: -0.4px !important;
+  background: linear-gradient(135deg, #e85d26 0%, #ff9d6e 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -55,67 +56,73 @@ export const LogoMark = styled(Typography)`
 `;
 
 export const Tagline = styled(Typography)`
-  color: rgba(255, 255, 255, 0.5) !important;
+  color: rgba(255, 255, 255, 0.42) !important;
   font-size: 0.875rem !important;
-  line-height: 1.6 !important;
-  max-width: 260px;
+  line-height: 1.65 !important;
+  max-width: 270px;
 `;
 
 export const SocialRow = styled.div`
   display: flex;
   gap: 8px;
-  margin-top: 4px;
 `;
 
 export const SocialButton = styled.a`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.6);
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.52);
   text-decoration: none;
   transition:
     background 0.2s ease,
-    color 0.2s ease;
+    color 0.2s ease,
+    border-color 0.2s ease;
 
   &:hover {
-    background: rgba(232, 93, 38, 0.2);
-    color: #e85d26;
+    background: rgba(232, 93, 38, 0.15);
+    border-color: rgba(232, 93, 38, 0.28);
+    color: #ff9d6e;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #e85d26;
+    outline-offset: 2px;
   }
 
   svg {
-    font-size: 18px;
+    font-size: 17px;
   }
 `;
 
 export const LinkSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 `;
 
 export const SectionTitle = styled(Typography)`
-  font-size: 0.75rem !important;
+  font-size: 0.72rem !important;
   font-weight: 700 !important;
-  letter-spacing: 1.2px !important;
+  letter-spacing: 1.4px !important;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4) !important;
-  margin-bottom: 4px !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+  margin-bottom: 2px !important;
 `;
 
 export const FooterLink = styled(MuiLink)`
-  color: rgba(255, 255, 255, 0.65) !important;
+  color: rgba(255, 255, 255, 0.58) !important;
   text-decoration: none !important;
   font-size: 0.875rem !important;
   line-height: 1.5 !important;
-  transition: color 0.2s ease !important;
-  display: inline-block;
+  transition: color 0.18s ease !important;
 
   &:hover {
-    color: #e85d26 !important;
+    color: rgba(255, 255, 255, 0.92) !important;
   }
 
   &:focus-visible {
@@ -126,8 +133,8 @@ export const FooterLink = styled(MuiLink)`
 `;
 
 export const FooterDivider = styled(Divider)`
-  border-color: rgba(255, 255, 255, 0.08) !important;
-  margin: 48px 0 24px !important;
+  border-color: rgba(255, 255, 255, 0.07) !important;
+  margin: 52px 0 28px !important;
 `;
 
 export const FooterBottom = styled.div`
@@ -139,23 +146,23 @@ export const FooterBottom = styled.div`
 `;
 
 export const Copyright = styled(Typography)`
-  color: rgba(255, 255, 255, 0.35) !important;
-  font-size: 0.8125rem !important;
+  color: rgba(255, 255, 255, 0.28) !important;
+  font-size: 0.8rem !important;
 `;
 
 export const BottomLinks = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 24px;
 `;
 
 export const BottomLink = styled(MuiLink)`
-  color: rgba(255, 255, 255, 0.35) !important;
+  color: rgba(255, 255, 255, 0.28) !important;
   text-decoration: none !important;
-  font-size: 0.8125rem !important;
-  transition: color 0.2s ease !important;
+  font-size: 0.8rem !important;
+  transition: color 0.18s ease !important;
 
   &:hover {
-    color: rgba(255, 255, 255, 0.7) !important;
+    color: rgba(255, 255, 255, 0.65) !important;
   }
 
   &:focus-visible {

@@ -19,10 +19,11 @@ export function RootLayout() {
   return (
     <>
       <SkipLink />
+      {/* Header is fixed/floating — renders outside normal flow */}
+      <Header onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
       <Box
         sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
       >
-        <Header onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
         <Box
           component="main"
           id="main-content"
@@ -30,7 +31,10 @@ export function RootLayout() {
           tabIndex={-1}
           sx={{
             flexGrow: 1,
-            outline: "none", // focus is managed programmatically
+            outline: "none",
+            // Reserve space below floating header for non-hero pages.
+            // Hero pages override this with a negative margin-top.
+            paddingTop: "88px",
           }}
         >
           <Outlet />
