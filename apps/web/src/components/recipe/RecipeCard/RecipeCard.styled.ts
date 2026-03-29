@@ -5,8 +5,6 @@ import CardActionArea from "@mui/material/CardActionArea";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import Chip from "@mui/material/Chip";
-import Avatar from "@mui/material/Avatar";
 import Skeleton from "@mui/material/Skeleton";
 
 export const StyledCard = styled(Card)`
@@ -68,23 +66,6 @@ export const ImageOverlay = styled.div`
     transparent 70%
   );
   pointer-events: none;
-`;
-
-export const DifficultyChip = styled(Chip)<{ $color: string }>`
-  position: absolute !important;
-  top: 12px;
-  left: 12px;
-  background: ${({ $color }) => $color} !important;
-  color: #ffffff !important;
-  font-weight: 600 !important;
-  font-size: 0.72rem !important;
-  height: 24px !important;
-  border-radius: 6px !important;
-  letter-spacing: 0.3px;
-
-  .MuiChip-label {
-    padding: 0 8px !important;
-  }
 `;
 
 export const FavoriteButton = styled(IconButton)<{ $active: boolean }>`
@@ -174,15 +155,6 @@ export const AuthorRow = styled(Box)`
   padding-top: 4px;
   border-top: 1px solid rgba(0, 0, 0, 0.06);
   margin-top: auto;
-`;
-
-export const AuthorAvatar = styled(Avatar)`
-  width: 26px !important;
-  height: 26px !important;
-  font-size: 0.68rem !important;
-  background: linear-gradient(135deg, #e85d26, #ff8c5a) !important;
-  font-weight: 700 !important;
-  border: 1.5px solid rgba(232, 93, 38, 0.2) !important;
 `;
 
 export const AuthorName = styled(Typography)`
