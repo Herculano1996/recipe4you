@@ -1,14 +1,20 @@
 import type { FastifyInstance } from "fastify";
 import { prisma } from "../../lib/prisma.js";
+import { searchAllExternal } from "../../services/externalApi.js";
 
 export async function searchRoutes(app: FastifyInstance): Promise<void> {
-  // GET /search?q= — unified search
+  // GET /search?q= — unified search (add ?external=true to fan-out to external APIs)
   app.get("/search", async (request, reply) => {
-    const query = request.query as { q?: string; limit?: string };
+    const query = request.query as {
+      q?: string;
+      limit?: string;
+      external?: string;
+    };
     const q = query.q ?? "";
-    const limit = Math.min(parseInt(query.limit ?? "20", 10), 50);
+    const limit = Math.min(Number.parseInt(query.limit ?? "20", 10), 50);
+    const includeExternal = query.external === "true";
 
-    const [recipes, tags] = await Promise.all([
+    const [recipes, tags, externalRecipes] = await Promise.all([
       prisma.recipe.findMany({
         where: {
           isPublished: true,
@@ -36,6 +42,9 @@ export async function searchRoutes(app: FastifyInstance): Promise<void> {
         where: { name: { contains: q, mode: "insensitive" } },
         take: 8,
       }),
+      includeExternal && q.trim().length > 1
+        ? searchAllExternal(q).catch(() => [])
+        : Promise.resolve([]),
     ]);
 
     return reply.send({
@@ -45,6 +54,7 @@ export async function searchRoutes(app: FastifyInstance): Promise<void> {
           tags: r.tags.map((rt: { tag: unknown }) => rt.tag),
         })),
         tags,
+        external: externalRecipes,
       },
     });
   });

@@ -4,16 +4,14 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
+import Box from "@mui/material/Box";
+import { UserAvatar } from "../../ui/UserAvatar/index.js";
+import { DifficultyChip } from "../../ui/DifficultyChip/index.js";
 import type {
   RecipeCardProps,
   RecipeCardSkeletonProps,
 } from "./RecipeCard.types.js";
-import {
-  formatTotalTime,
-  formatRating,
-  getDifficultyColor,
-  getDifficultyLabel,
-} from "./RecipeCard.utils.js";
+import { formatTotalTime, formatRating } from "./RecipeCard.utils.js";
 import {
   StyledCard,
   StyledCardActionArea,
@@ -21,7 +19,6 @@ import {
   RecipeImage,
   ImagePlaceholder,
   ImageOverlay,
-  DifficultyChip,
   FavoriteButton,
   StyledCardContent,
   RecipeTitle,
@@ -30,21 +27,15 @@ import {
   MetaItem,
   Divider,
   AuthorRow,
-  AuthorAvatar,
   AuthorName,
   RatingRow,
   RatingText,
   RatingCount,
   SkeletonCard,
 } from "./RecipeCard.styled.js";
-import Box from "@mui/material/Box";
 
 export function RecipeCard({ recipe, onFavoriteToggle }: RecipeCardProps) {
   const navigate = useNavigate();
-
-  const authorInitial = (recipe.author.displayName ?? recipe.author.username)
-    .charAt(0)
-    .toUpperCase();
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -78,17 +69,14 @@ export function RecipeCard({ recipe, onFavoriteToggle }: RecipeCardProps) {
           <ImageOverlay aria-hidden />
 
           <DifficultyChip
-            label={getDifficultyLabel(recipe.difficulty)}
-            $color={getDifficultyColor(recipe.difficulty)}
-            size="small"
-            aria-label={`Difficulty: ${getDifficultyLabel(recipe.difficulty)}`}
+            difficulty={recipe.difficulty}
+            overlay
+            aria-label={`Difficulty: ${recipe.difficulty}`}
           />
         </ImageWrapper>
 
         <StyledCardContent>
-          <RecipeTitle variant="h3">
-            {recipe.title}
-          </RecipeTitle>
+          <RecipeTitle variant="h3">{recipe.title}</RecipeTitle>
 
           {recipe.description && (
             <RecipeDescription variant="body2">
@@ -112,13 +100,12 @@ export function RecipeCard({ recipe, onFavoriteToggle }: RecipeCardProps) {
           </MetaRow>
 
           <AuthorRow>
-            <AuthorAvatar
-              src={recipe.author.avatarUrl ?? undefined}
-              alt={recipe.author.displayName ?? recipe.author.username}
+            <UserAvatar
+              src={recipe.author.avatarUrl}
+              displayName={recipe.author.displayName ?? recipe.author.username}
+              size="sm"
               aria-hidden
-            >
-              {authorInitial}
-            </AuthorAvatar>
+            />
             <AuthorName>
               {recipe.author.displayName ?? recipe.author.username}
             </AuthorName>

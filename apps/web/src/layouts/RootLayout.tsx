@@ -1,20 +1,38 @@
 import { useEffect, useRef } from "react";
-import { Outlet, useLocation } from "react-router";
+import { Outlet, useLocation, useNavigate } from "react-router";
 import Box from "@mui/material/Box";
 import { SkipLink } from "../components/layout/SkipLink/SkipLink.js";
 import { Header } from "../components/layout/Header/Header.js";
 import { Footer } from "../components/layout/Footer/Footer.js";
 import { useUIStore } from "../store/uiStore.js";
+import { useAuthStore } from "../store/authStore.js";
+import { useSessionInit } from "../hooks/useSessionInit.js";
 
 export function RootLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const mainRef = useRef<HTMLElement>(null);
   const { sidebarOpen, setSidebarOpen } = useUIStore();
+  const { clearAuth } = useAuthStore();
+
+  // Verify stored token on boot and keep user data fresh
+  useSessionInit();
 
   // WCAG 2.4.3 — move focus to main content on route change
   useEffect(() => {
     mainRef.current?.focus();
   }, [location.pathname]);
+
+  // Global handler for token expiry events dispatched by api.ts
+  useEffect(() => {
+    function handleAuthLogout() {
+      clearAuth();
+      void navigate("/auth/login");
+    }
+
+    window.addEventListener("auth:logout", handleAuthLogout);
+    return () => window.removeEventListener("auth:logout", handleAuthLogout);
+  }, [clearAuth, navigate]);
 
   return (
     <>

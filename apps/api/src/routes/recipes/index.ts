@@ -92,12 +92,14 @@ export async function recipesRoutes(app: FastifyInstance): Promise<void> {
     });
 
     const hasMore = recipes.length > query.limit;
-    const data = hasMore ? recipes.slice(0, -1) : recipes;
-    const nextCursor = hasMore ? data[data.length - 1]?.id : null;
+    const items = hasMore ? recipes.slice(0, -1) : recipes;
+    const nextCursor = hasMore ? items[items.length - 1]?.id : null;
 
     return reply.send({
-      data: data.map(formatRecipe),
-      meta: { nextCursor, hasMore },
+      data: {
+        items: items.map(formatRecipe),
+        meta: { nextCursor, hasMore },
+      },
     });
   });
 

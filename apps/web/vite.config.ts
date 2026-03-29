@@ -5,6 +5,8 @@ import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // Monorepo: .env lives at the repo root, two levels above apps/web/
+  envDir: path.resolve(__dirname, '../../'),
   plugins: [
     react(),
     VitePWA({
