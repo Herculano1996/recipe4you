@@ -1,6 +1,6 @@
 {
   "buildCommand": "pnpm turbo run build --filter=@recipe4you/web...",
   "outputDirectory": "apps/web/dist",
-  "installCommand": "npm install -g pnpm@9.15.9 && pnpm install --frozen-lockfile",
+  "installCommand": "npx --yes pnpm@9.15.9 install --frozen-lockfile",
   "framework": "vite"
 }
